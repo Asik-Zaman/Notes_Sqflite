@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:notes_sqflite/DBHelper/db_helper.dart';
 import 'package:notes_sqflite/Pages/notes_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DBHelper().db;
   runApp(const MyApp());
 }
 

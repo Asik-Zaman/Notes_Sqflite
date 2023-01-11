@@ -27,16 +27,30 @@ class DBHelper {
         'CREATE TABLE note (id INTEGER PRIMARY KEY , title TEXT, desc TEXT) ');
   }
 
-  Future<Note> insert(Note note) async {
+  Future<void> insert(Note note) async {
     var dbClient = await db;
-    await dbClient!.insert('note', note.toMap());
-    return note;
+    await dbClient!.insert(
+      'note',
+      note.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
   Future<List<Note>> getNoteList() async {
     var dbClient = await db;
-    final List<Map<String, Object?>> queryResult =
+    final List<Map<String, dynamic>> queryResult =
         await dbClient!.query('note');
     return queryResult.map((e) => Note.fromMap(e)).toList();
+  }
+
+  Future<int> updateQuantity(Note note) async {
+    var dbClient = await db;
+    return await dbClient!
+        .update('note', note.toMap(), where: 'id = ?', whereArgs: [note.id]);
+  }
+
+  Future<int?> deleteItem(int? id) async {
+    var dbClient = await db;
+    return await dbClient!.delete('note', where: 'id = ?', whereArgs: [id]);
   }
 }
